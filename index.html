@@ -1,19 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Angular.js Chord Transposer</title>
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js"></script>
-	<script src="angular.chordtransposer.js"></script>
-</head>
-<body ng-app="transposer" ng-controller="TransposerCtrl">
-	<input type="text" ng-model="songKey">
-	<textarea name="" id="" cols="30" rows="10" ng-repeat="songSection in sections track by $index" ng-model="sections[$index]"  ng-trim="false"></textarea>
 
-	<transpose-area ng-repeat="songSection in sections track by $index" ng-model="songSection" key="{{songKey}}">
-	</transpose-area>
+<head>
+    <meta charset="UTF-8">
+    <title>Angular.js Chord Transposer</title>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js"></script>
+    <script src="angular.chordtransposer.js"></script>
+    <script>
+    var demoApp = angular.module('chordTransposerDemoApp', ['chordTransposer']);
+    demoApp.controller('TransposerCtrl', ['$scope',
+        function($scope) {
+            $scope.sections = ["    A    B   C \n  Hello hello", "    A    B   C \n  Hello hellot", "    A    B   C \n  Hello hellot"];
+            $scope.songKey = "C";
+
+            $scope.keys = [{
+                name: 'Ab',
+                value: 0,
+                type: 'F'
+            }, {
+                name: 'A',
+                value: 1,
+                type: 'N'
+            }, {
+                name: 'A#',
+                value: 2,
+                type: 'S'
+            }, {
+                name: 'Bb',
+                value: 2,
+                type: 'F'
+            }, {
+                name: 'B',
+                value: 3,
+                type: 'N'
+            }, {
+                name: 'C',
+                value: 4,
+                type: 'N'
+            }, {
+                name: 'C#',
+                value: 5,
+                type: 'S'
+            }, {
+                name: 'Db',
+                value: 5,
+                type: 'F'
+            }, {
+                name: 'D',
+                value: 6,
+                type: 'N'
+            }, {
+                name: 'D#',
+                value: 7,
+                type: 'S'
+            }, {
+                name: 'Eb',
+                value: 7,
+                type: 'F'
+            }, {
+                name: 'E',
+                value: 8,
+                type: 'N'
+            }, {
+                name: 'F',
+                value: 9,
+                type: 'N'
+            }, {
+                name: 'F#',
+                value: 10,
+                type: 'S'
+            }, {
+                name: 'Gb',
+                value: 10,
+                type: 'F'
+            }, {
+                name: 'G',
+                value: 11,
+                type: 'N'
+            }, {
+                name: 'G#',
+                value: 0,
+                type: 'S'
+            }];
+        }
+    ]);
+    </script>
+</head>
+
+<body ng-app="chordTransposerDemoApp" ng-controller="TransposerCtrl">
+    <select ng-model="songKey" ng-options="key.name as key.name for key in keys"></select>
+    <textarea name="" id="" cols="30" rows="10" ng-repeat="songSection in sections track by $index" ng-model="sections[$index]" ng-trim="false"></textarea>
+
+    <transpose-area ng-repeat="songSection in sections track by $index" ng-model="songSection" key="{{songKey}}">
+    </transpose-area>
 
 
 </body>
+
 </html>

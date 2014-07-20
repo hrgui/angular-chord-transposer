@@ -1,11 +1,4 @@
-var transposerModule = angular.module('transposer', []);
-
-transposerModule.controller('TransposerCtrl', ['$scope',
-  function($scope) {
-    $scope.sections  = ["    A    B   C \n  Hello hello", "    A    B   C \n  Hello hellot", "    A    B   C \n  Hello hellot"];
-    $scope.songKey = "C";
-  }
-])
+var transposerModule = angular.module('chordTransposer', []);
 
 transposerModule.directive('transposeArea', function($compile) {
   var el, currentKey,
@@ -287,13 +280,12 @@ transposerModule.directive('transposeArea', function($compile) {
       scope.$watch(function() {
         return scope.key;
       }, function(newKeyName, oldKeyName) {
-        console.log(newKeyName);
-        console.log(oldKeyName);
+        if(!newKeyName) return;
+        if(oldKeyName) {
+          currentKey = getKeyByName(oldKeyName);
+        }
 
-        currentKey = getKeyByName(oldKeyName);
-
-
-        transposeSong(element, newKeyName, oldKeyName);
+        transposeSong(element, newKeyName);
       });
     },
     controller: function($scope) {
@@ -302,6 +294,7 @@ transposerModule.directive('transposeArea', function($compile) {
       function changeKeyByValue(keyValue) {
         var newKey = getKeyByValue(keyValue);
         $scope.key = newKey.name;
+        // triggers the watch
       }
 
       $scope.keyUp = function() {
