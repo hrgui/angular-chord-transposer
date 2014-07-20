@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Angular.js Chord Transposer</title>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js"></script>
+	<script src="angular.chordtransposer.js"></script>
+</head>
+<body ng-app="transposer" ng-controller="TransposerCtrl">
+	<input type="text" ng-model="songKey">
+	<textarea name="" id="" cols="30" rows="10" ng-repeat="songSection in sections track by $index" ng-model="sections[$index]"  ng-trim="false"></textarea>
+
+	<transpose-area ng-repeat="songSection in sections track by $index" ng-model="songSection" key="{{songKey}}">
+	</transpose-area>
+
+
+</body>
+</html>
