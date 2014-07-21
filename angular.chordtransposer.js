@@ -78,9 +78,10 @@ transposerModule.directive('transposeArea', function($compile) {
 
   // input: a line
   // output: a wrapper
-  var wrapChords = function(input) {
+  var wrapChords = function(input, scope) {
     return input.replace(opts.chordReplaceRegex, function(match, p1) {
-      return '<span class="c">' + p1 + '</span>';
+      scope.chords.push(p1);
+      return '<span class="c">{{chords['+ (scope.chords.length - 1) +']}}</span>';
     });
   };
 
@@ -103,14 +104,14 @@ transposerModule.directive('transposeArea', function($compile) {
     return true;
   };
 
-  function render(element, value) {
+  function render(element, value, scope) {
     if (!value) return;
 
     var lines = value.split("\n");
 
     lines = lines.map(function(line) {
       if (isChordLine(line)) {
-        return '<span>' + wrapChords(line) + '</span>';
+        return '<span>' + wrapChords(line, scope) + '</span>';
       } else {
         return '<span>' + line + '</span>';
       }
@@ -119,6 +120,7 @@ transposerModule.directive('transposeArea', function($compile) {
     var chordArea = element[0].querySelector("pre");
 
     chordArea.innerHTML = lines.join("\n");
+    $compile(angular.element(chordArea))(scope);
 
   };
 
@@ -161,37 +163,21 @@ transposerModule.directive('transposeArea', function($compile) {
     }
   };
 
-  var transposeSong = function(element, key) {
-    var newKey = getKeyByName(key);
+  var transposeSongScope = function(element, key, scope) {
+     var newKey = getKeyByName(key);
+     var delta = getDelta(currentKey.value, newKey.value);
 
-    // This solves the problem for currentKey being updated
-    // if (currentKey.name == newKey.name) {
-    //   return;
-    // }
+     for(var i = 0; i < scope.chords.length; i++) {
+        scope.chords[i] = transposeChord(scope.chords[i], delta, newKey);
+     }
 
-    var delta = getDelta(currentKey.value, newKey.value);
-    
-    element.find("span.c").each(function(i, el) {
-      transposeChord(el, delta, newKey);
-    });
-
-    currentKey = newKey;
+     currentKey = newKey;
   };
 
-  var transposeChord = function(selector, delta, targetKey) {
-    var el = $(selector);
-    var oldChord = el.text();
-    var oldChordRoot = getChordRoot(oldChord);
-    var newChordRoot = getNewKey(oldChordRoot, delta, targetKey);
-    var newChord = newChordRoot.name + oldChord.substr(oldChordRoot.length);
-    el.text(newChord);
-
-    var sib = el[0].nextSibling;
-    if (sib && sib.nodeType == 3 && sib.nodeValue.length > 0 && sib.nodeValue.charAt(0) != "/") {
-      var wsLength = getNewWhiteSpaceLength(oldChord.length, newChord.length, sib.nodeValue.length);
-      sib.nodeValue = makeString(" ", wsLength);
-    }
-  };
+  var transposeChord = function(oldChord, delta, targetKey) {
+    var oldChordRoot = getChordRoot(oldChord), newChordRoot = getNewKey(oldChordRoot, delta, targetKey);
+    return newChordRoot.name + oldChord.substr(oldChordRoot.length);
+  }
 
   var getNewWhiteSpaceLength = function(a, b, c) {
     if (a > b)
@@ -272,9 +258,10 @@ transposerModule.directive('transposeArea', function($compile) {
       key: '@'
     },
     link: function compile(scope, element, attrs, controller, ngModel) {
+      scope.chords = [];
       scope.$watch('ngModel', function(value) {
         currentKey = getKeyByName(scope.key);
-        render(element, value);
+        render(element, value, scope);
       });
 
       scope.$watch(function() {
@@ -284,8 +271,7 @@ transposerModule.directive('transposeArea', function($compile) {
         if(oldKeyName) {
           currentKey = getKeyByName(oldKeyName);
         }
-
-        transposeSong(element, newKeyName);
+        transposeSongScope(element, newKeyName, scope);
       });
     },
     controller: function($scope) {

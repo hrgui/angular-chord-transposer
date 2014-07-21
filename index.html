@@ -4,15 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Angular.js Chord Transposer</title>
-    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.min.js"></script>
     <script src="angular.chordtransposer.js"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .c {
+            font-weight:600;
+            color: #0000cc;
+        }
+
+        textarea {
+            display:block;
+        }
+
+        .section-title {
+            font-weight:600;
+            font:monospace;
+        }
+
+        .editor, .preview {
+            float: left;
+            width:50%;
+        }
+    </style>
     <script>
     var demoApp = angular.module('chordTransposerDemoApp', ['chordTransposer']);
     demoApp.controller('TransposerCtrl', ['$scope',
         function($scope) {
-            $scope.sections = ["    A    B   C \n  Hello hello", "    A    B   C \n  Hello hellot", "    A    B   C \n  Hello hellot"];
-            $scope.songKey = "C";
+            $scope.song = {
+                "artist": "The Beatles",
+                "key": "C",
+                "sections": [{
+                    "title": "Verse 1",
+                    "body": "C              G                 Am          F\nWhen I find myself in times of trouble, Mother Mary comes to me\nC                 G              F   C/E   Dm   C\nSpeaking words of wisdom, let it be"
+                }, {
+                    "title": "Verse 2",
+                    "body": "    C             G                Am                F\nAnd in my hour of darkness, She is standing right in front of me\nC                 G              F   C/E   Dm   C\nSpeaking words of wisdom, let it be"
+                }, {
+                    "title": "Chorus",
+                    "body": "       Am         G          F          C\nLet it be, let it be, let it be, let it be\n                 G              F   C/E   Dm   C\nWhisper words of wisdom, let it be"
+                }],
+                "title": "Let It Be",
+            };
 
             $scope.keys = [{
                 name: 'Ab',
@@ -89,12 +124,40 @@
 </head>
 
 <body ng-app="chordTransposerDemoApp" ng-controller="TransposerCtrl">
-    <select ng-model="songKey" ng-options="key.name as key.name for key in keys"></select>
-    <textarea name="" id="" cols="30" rows="10" ng-repeat="songSection in sections track by $index" ng-model="sections[$index]" ng-trim="false"></textarea>
+    <div class="editor">
+        <div class="form-group">
+            <label for="">Title</label>
+            <input type="text" ng-model="song.title">
+        </div>
+        <div>
+            <label for="">Artist</label>
+            <input type="text" ng-model="song.artist">
+        </div>
+        <div class="form-group">
+            <label for="">Song Key</label>
+            <select ng-model="song.key" ng-options="key.name as key.name for key in keys"></select>
+        </div>
+        <div class="form-group" ng-repeat="songSection in song.sections track by $index">
+            <input type="text" ng-model="songSection.title">
+            <textarea name="" id="" cols="70" rows="10" ng-model="songSection.body" ng-trim="false"></textarea>
+        </div>
+    </div>
+    <div class="preview">
+        <h3>{{song.title}}</h3>
+        <h4>{{song.artist}}</h4>
+        <div ng-repeat="songSection in song.sections track by $index">
+            <h5>{{songSection.title}}</h5>
+            <transpose-area ng-model="songSection.body" key="{{song.key}}">
+            </transpose-area>  
+        </div>
+    </div>
 
-    <transpose-area ng-repeat="songSection in sections track by $index" ng-model="songSection" key="{{songKey}}">
-    </transpose-area>
 
+
+
+    
+
+    
 
 </body>
 
