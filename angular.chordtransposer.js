@@ -1,3 +1,8 @@
+/**
+ * angular.js chord transposer (ng-chord-transposer)
+ * @author  Harman Goei
+ */
+
 var transposerModule = angular.module('chordTransposer', []);
 
 transposerModule.directive('transposeArea', function($compile) {
