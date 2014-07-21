@@ -33,7 +33,7 @@ Changelog
 ===
 0.1.0
 ---
-* Took out the jQuery library dependency that the original jquery.chord.transposer has; reducing DOM manipulation and overall foot print
+* Took out the jQuery library dependency that the original jquery.chord.transposer has; reducing dependencies / footprint
 * All of the guitar chords are in the scope, and transposeSong, transposeChord has been changed signficantly
 * Using the scope loses the whitespace updating that jquery.chord.transposer had
 
