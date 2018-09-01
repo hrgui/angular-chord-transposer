@@ -1,0 +1,32 @@
+{
+  "name": "angular-chord-area",
+  "version": "0.2.0",
+  "homepage": "https://github.com/hrgui/ng-chord-transposer",
+  "authors": [
+    "Harman Goei"
+  ],
+  "description": "Angular.js directive that will transform any plain text guitar chord music chart allowing the user to change chords in a single click.",
+  "keywords": [
+    "angular.js",
+    "chords",
+    "songs"
+  ],
+  "main": [
+    "dist/angular.chord-area.css",
+    "dist/angular.chord-area.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.14"
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.2"
+  }
+}
